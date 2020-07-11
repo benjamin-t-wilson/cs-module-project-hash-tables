@@ -22,7 +22,10 @@ class HashTable:
 
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
-        self.storage = [None] * (capacity + 2)
+        self.storage = [None] * (capacity)
+        self.size = 0
+        self.max_load_factor = 0.7
+        self.min_load_factor = 0.2
 
 
     def get_num_slots(self):
@@ -44,7 +47,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.size / self.capacity if self.size > 0 else 0
 
 
     def fnv1(self, key):
@@ -89,7 +92,7 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-
+        self.size += 1
         # item does not exist
         if self.storage[index] is None:
             self.storage[index] = HashTableEntry(key, value)
@@ -117,11 +120,14 @@ class HashTable:
         index = self.hash_index(key)
         
         if self.storage[index]:
+
+            self.size -= 1
+
             if self.storage[index].key == key:
                 if self.storage[index].next is not None:
                     self.storage[index] = self.storage[index].next
-                    return
-                self.storage[index] = None
+                else:
+                    self.storage[index] = None
             else:
                 node = self.storage[index]
                 while node.next:
@@ -161,24 +167,57 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        if self.get_load_factor() > self.max_load_factor:
+            old_storage = self.storage.copy()
+            self.capacity = new_capacity or self.capacity * 2
+            self.storage = [None] * self.capacity
+
+            for item in old_storage:
+                while item:
+                    self.put(item.key, item.value)
+                    item = item.next
+            return
+        elif self.get_load_factor() < self.min_load_factor and self.capacity > 8:
+            old_storage = self.storage.copy()
+            self.capacity = new_capacity or self.capacity / 2
+            self.storage = [None] * self.capacity
+
+            for item in old_storage:
+                while item:
+                    self.put(item.key, item.value)
+                    item = item.next
+            return
+        else:
+            return
 
 
 if __name__ == "__main__":
     ht = HashTable(8)
-
+    print("LARGE BOI ", ht.get_load_factor())
     ht.put("line_1", "'Twas brillig, and the slithy toves")
+    print("LARGE BOI ", ht.get_load_factor())
     ht.put("line_2", "Did gyre and gimble in the wabe:")
+    print("LARGE BOI ", ht.get_load_factor())
     ht.put("line_3", "All mimsy were the borogoves,")
+    print("LARGE BOI ", ht.get_load_factor())
     ht.put("line_4", "And the mome raths outgrabe.")
+    print("LARGE BOI ", ht.get_load_factor())
     ht.put("line_5", '"Beware the Jabberwock, my son!')
+    print("LARGE BOI ", ht.get_load_factor())
     ht.put("line_6", "The jaws that bite, the claws that catch!")
+    print("LARGE BOI ", ht.get_load_factor())
     ht.put("line_7", "Beware the Jubjub bird, and shun")
+    print("LARGE BOI ", ht.get_load_factor())
     ht.put("line_8", 'The frumious Bandersnatch!"')
+    print("LARGE BOI ", ht.get_load_factor())
     ht.put("line_9", "He took his vorpal sword in hand;")
+    print("LARGE BOI ", ht.get_load_factor())
     ht.put("line_10", "Long time the manxome foe he sought--")
+    print("LARGE BOI ", ht.get_load_factor())
     ht.put("line_11", "So rested he by the Tumtum tree")
+    print("LARGE BOI ", ht.get_load_factor())
     ht.put("line_12", "And stood awhile in thought.")
+    print("LARGE BOI ", ht.get_load_factor())
 
     print("")
 
