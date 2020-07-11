@@ -167,6 +167,7 @@ class HashTable:
 
         Implement this.
         """
+        # I need to comment my code
         if self.get_load_factor() > self.max_load_factor:
             old_storage = self.storage.copy()
             self.capacity = new_capacity or self.capacity * 2
