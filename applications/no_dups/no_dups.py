@@ -1,5 +1,7 @@
 def no_dups(s):
     # Your code here
+    my_str = " "
+    return my_str.join(list(dict.fromkeys(s.split())))
 
 
 
