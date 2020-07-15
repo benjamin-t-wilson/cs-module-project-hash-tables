@@ -1,5 +1,19 @@
+ignored_chars = (":", ";", ",", ".", "-", "+", "=", "/", "\\", "|", "[", "]", "{", "}", "(", ")", "*", "^", "&", "\"")
+
 def word_count(s):
     # Your code here
+    for char in ignored_chars:
+        s = s.replace(char, "")
+    s = s.lower().split()
+    word_dict = {}
+    if len(s) == 1 and s[0] == "":
+        return {}
+    for word in s:
+        if word not in word_dict:
+            word_dict[word] = 1
+        else:
+            word_dict[word] += 1
+    return word_dict
 
 
 
